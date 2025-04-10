@@ -1,7 +1,8 @@
 package Graph;
 
 import java.lang.reflect.Array;
-import java.util.ArrayList;
+import java.util.*;
+
 
 /**
  * Represents a non-directional graph where each vertex
@@ -136,41 +137,53 @@ public class Graph {
      * @return An array of Node objects representing the path from start to target, in that order
      */
     public Node[] breadthFirstSearch(Node start, Node target) {
+        System.out.println("start:"+start+"target:"+target);
         // TODO
-        ArrayList<Node> Qeue_node = new ArrayList<>();
+        Queue<Node> Qeue_node = new LinkedList<Node>();
         ArrayList<Node> Has_table_node = new ArrayList<>();
+        Map<Node, Node> recall = new HashMap<Node, Node>();
         int[][] Direction = {{0, 1},//👉
                 {1, 0}//👇
                 , {0, -1}//👈
                 , {-1, 0}//👆
                 ,};
         Qeue_node.add(start);
+        Has_table_node.add(start);
+        while (!Qeue_node.isEmpty()) {
+            Node node = Qeue_node.poll();
 
-        while (true) {
-            if (Qeue_node.isEmpty()) {
-                return null;
-            }
-            for (Node node : Qeue_node) {
-                for(Edge edge:node.getEdges()){
-                    if(edge==null){
-                        continue;
-                    }
-                    Node push_element = edge.getToNode();
-                    if(Has_table_node.contains(push_element)){
-                        continue;
-
-                    }
-                    if(push_element.equals(target)){
-                        System.out.println("finding!!!!!!");
-                        return null;
-                    }
-                    Qeue_node.add(push_element);
+            for (Edge edge : node.getEdges()) {
+                if (edge == null) {
+                    continue;
                 }
-                Has_table_node.add(node);
-                Qeue_node.remove(node);
+                Node push_element = edge.getToNode();
+                if (Has_table_node.contains(push_element)) {
+                    continue;
+
+                }
+                recall.put(push_element, node);
+                if (push_element.equals(target)) {
+                    ArrayList<Node> path = new ArrayList<Node>();
+//                    path.addLast(target);
+                    Node head = recall.get(target);
+                    int index = 0;
+                    while (!head.equals(start)) {
+                        path.addFirst(head);
+                        head = recall.get(head);
+                        index++;
+                    }
+                    path.addFirst(head);
+                    path.addLast(target);
+                    Node[] path_0 = path.toArray(new Node[0]);
+                    return path_0;
+                }
+                Qeue_node.add(push_element);
+                Has_table_node.add(push_element);
             }
+
 
         }
+        return null;
     }
 
 
@@ -184,8 +197,17 @@ public class Graph {
      */
     public Node[] depthFirstSearch(Node start, Node target) {
         // TODO
+        Stack<Node> node_stake = new Stack<Node>();
+        node_stake.add(start);
+        while(!node_stake.isEmpty()){
+
+            node_stake.pop();
+        }
 
         return null;
+    }
+    private void dfs_helper(){
+
     }
 
 

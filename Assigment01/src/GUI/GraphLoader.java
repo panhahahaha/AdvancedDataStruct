@@ -31,7 +31,7 @@ public class GraphLoader {
 			FileInputStream fileIn;
 			ObjectInputStream in;
 
-			fileIn = new FileInputStream("Assigment01/src/Resources/simple_graph.ser");
+			fileIn = new FileInputStream("C:\\Users\\赵\\Documents\\WeChat Files\\wxid_rjn20f2ozwdh22\\FileStorage\\File\\2025-04\\javafxdemo01\\javafxdemo01\\Assigment01\\src\\Resources\\simple_graph.ser");
 			in = new ObjectInputStream(fileIn);
 			nodes = (Node[]) in.readObject();
 			in.close();
