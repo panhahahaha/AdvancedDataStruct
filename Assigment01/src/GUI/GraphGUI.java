@@ -16,7 +16,7 @@ public class GraphGUI extends Application {
 		stage.setTitle("Data Structures Advanced - Assignment 1");
 		stage.setResizable(false);
 
-		Parent root = FXMLLoader.load(getClass().getResource("SimpleGraphGUI.fxml"));
+		Parent root = FXMLLoader.load(getClass().getResource("/GUI/SimpleGraphGUI.fxml"));
 		Scene scene = new Scene(root, 720, 600);
 
 		canvas = (Canvas)scene.getRoot().getChildrenUnmodifiable().get(1);

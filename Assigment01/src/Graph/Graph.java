@@ -3,6 +3,7 @@ package Graph;
 import java.lang.reflect.Array;
 import java.util.*;
 
+import java.util.LinkedList;
 
 /**
  * Represents a non-directional graph where each vertex
@@ -137,7 +138,7 @@ public class Graph {
      * @return An array of Node objects representing the path from start to target, in that order
      */
     public Node[] breadthFirstSearch(Node start, Node target) {
-        System.out.println("start:"+start+"target:"+target);
+        System.out.println("start:" + start + "target:" + target);
         // TODO
         Queue<Node> Qeue_node = new LinkedList<Node>();
         ArrayList<Node> Has_table_node = new ArrayList<>();
@@ -163,7 +164,7 @@ public class Graph {
                 }
                 recall.put(push_element, node);
                 if (push_element.equals(target)) {
-                    ArrayList<Node> path = new ArrayList<Node>();
+                    LinkedList<Node> path = new LinkedList<>();
 //                    path.addLast(target);
                     Node head = recall.get(target);
                     int index = 0;
@@ -198,16 +199,37 @@ public class Graph {
     public Node[] depthFirstSearch(Node start, Node target) {
         // TODO
         Stack<Node> node_stake = new Stack<Node>();
+        ArrayList<Node> visited = new ArrayList<>();
         node_stake.add(start);
-        while(!node_stake.isEmpty()){
-
-            node_stake.pop();
-        }
-
-        return null;
+        visited.add(start);
+        dfs_helper(visited, node_stake, start, target);
+        Node[] path = node_stake.toArray(new Node[0]);
+        System.out.println("path is:"+path.length);
+        return path;
     }
-    private void dfs_helper(){
 
+    private boolean dfs_helper(ArrayList<Node> visited, Stack<Node> node_stake, Node start, Node target) {
+        if (node_stake.peek() == null) {
+            return false;
+
+        }
+        for (Edge edge : start.getEdges()) {
+            Node tonode = edge.getToNode();
+            if (visited.contains(tonode)) {
+                continue;
+            }
+            node_stake.push(tonode);
+            visited.add(tonode);
+            if (target.equals(tonode)) {
+                System.out.println("Finding!" + "\n" + node_stake);
+                return true;
+            }
+            if(dfs_helper(visited, node_stake, tonode, target)){
+                return true;
+            };
+        }
+        node_stake.pop();
+        return false;
     }
 
 
@@ -222,8 +244,72 @@ public class Graph {
      */
     public Node[] dijkstrasSearch(Node start, Node target) {
         // TODO
+        ArrayList<Node> visited = new ArrayList<>();
+        ArrayList<Node> all_node = new ArrayList<>();
+        this.get_all_nodes(start, all_node);
+        System.out.println("all_node size is :" + all_node.size());
+        double[] distance = new double[all_node.size()];
+        ArrayList<ArrayList<Node>> path = new ArrayList<>();
+        test_for_running(all_node,start,target);
+        while (visited.size() != all_node.size()) {
+            Node min_node = null;
+            double min_weights = Double.MAX_VALUE;
+            //finding a min_node and a min_weight
+            for (Node node : all_node) {
+                for (Edge edge : node.getEdges()) {
+                    Node to_node = edge.getToNode();
+                    if (!visited.contains(node) && min_weights > edge.getWeight()) {
+                        min_weights = edge.getWeight();
+                        min_node = to_node;
+                    }
+                }
+
+            }
+
+            if (min_node == null) {
+                break;
+            }
+            //ending.......
+            for (Edge edge : min_node.getEdges()) {
+                Node to_node = edge.getToNode();
+                int index_to_node = all_node.indexOf(to_node);
+                int index_current = all_node.indexOf(min_node);
+                if (!visited.contains(to_node) && distance[index_to_node] > distance[index_current] + edge.getWeight()) {
+                    distance[index_to_node] = distance[index_current] + edge.getWeight();
+
+                }
+            }
+            visited.add(min_node);
+        }
+        for (int i = 0 ;i < 10 ; i ++){
+            for(int j = 0;j<10;j++){
+                int index = i*10+j;
+                System.out.print(distance[index]);
+            }
+            System.out.println();
+        }
+        double min_weight;
+
 
         return null;
+    }
+    private void test_for_running(ArrayList<Node> nodes,Node start, Node target){
+        System.out.println("start is contained in nodes:"+nodes.contains(start));
+        System.out.println("end is contained in nodes:"+nodes.contains(target));
+    }
+
+    private void get_all_nodes(Node start, ArrayList<Node> all_node) {
+        ArrayList<Edge> edges = start.getEdges();
+        for (Edge edge : edges) {
+            Node to_node = edge.getToNode();
+            if (all_node.contains(to_node)) {
+                continue;
+            }
+            all_node.add(to_node);
+            get_all_nodes(to_node, all_node);
+        }
+
+
     }
 
 }

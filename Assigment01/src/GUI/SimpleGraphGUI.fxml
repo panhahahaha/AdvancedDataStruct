@@ -22,9 +22,9 @@
                 layoutY="0"
                 pickOnBounds="true"
                 preserveRatio="true">
-            <Image
-                    url="resources/simple_map_elevations.png"
-                    backgroundLoading="true"/>
+<!--            <Image-->
+<!--                    url="Resources/simple_map_elevations.png"-->
+<!--                    backgroundLoading="true"/>-->
         </ImageView>
     </HBox>
 
