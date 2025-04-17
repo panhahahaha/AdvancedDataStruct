@@ -1,6 +1,5 @@
 package Graph;
 
-import java.lang.reflect.Array;
 import java.util.*;
 
 import java.util.LinkedList;
@@ -204,7 +203,7 @@ public class Graph {
         visited.add(start);
         dfs_helper(visited, node_stake, start, target);
         Node[] path = node_stake.toArray(new Node[0]);
-        System.out.println("path is:"+path.length);
+        System.out.println("path is:" + path.length);
         return path;
     }
 
@@ -224,9 +223,10 @@ public class Graph {
                 System.out.println("Finding!" + "\n" + node_stake);
                 return true;
             }
-            if(dfs_helper(visited, node_stake, tonode, target)){
+            if (dfs_helper(visited, node_stake, tonode, target)) {
                 return true;
-            };
+            }
+            ;
         }
         node_stake.pop();
         return false;
@@ -244,30 +244,45 @@ public class Graph {
      */
     public Node[] dijkstrasSearch(Node start, Node target) {
         // TODO
+
         ArrayList<Node> visited = new ArrayList<>();
         ArrayList<Node> all_node = new ArrayList<>();
+        ArrayList<ArrayList<Node>> path =  new ArrayList<>();
         this.get_all_nodes(start, all_node);
         System.out.println("all_node size is :" + all_node.size());
         double[] distance = new double[all_node.size()];
-        ArrayList<ArrayList<Node>> path = new ArrayList<>();
-        test_for_running(all_node,start,target);
+        int start_index =all_node.indexOf(start);
+        Node [] prev = new Node[all_node.size()];
+        for (int i = 0; i < all_node.size(); i++) {
+            if(i==start_index){
+                distance[i] = 0;
+                continue;
+            }
+            distance[i] = Double.MAX_VALUE;
+        }
+        test_for_running(all_node, start, target);
+        int index_path = 0;
         while (visited.size() != all_node.size()) {
             Node min_node = null;
             double min_weights = Double.MAX_VALUE;
             //finding a min_node and a min_weight
+            int index_distance = 0;
             for (Node node : all_node) {
-                for (Edge edge : node.getEdges()) {
-                    Node to_node = edge.getToNode();
-                    if (!visited.contains(node) && min_weights > edge.getWeight()) {
-                        min_weights = edge.getWeight();
-                        min_node = to_node;
-                    }
+
+                if (!visited.contains(node) && min_weights > distance[index_distance]) {
+                    min_weights = distance[index_distance];
+                    min_node = node;
                 }
+                index_distance++;
 
             }
 
             if (min_node == null) {
                 break;
+            }
+            if (min_node.equals(target)){
+                System.out.println("finding!!!");
+//                break;
             }
             //ending.......
             for (Edge edge : min_node.getEdges()) {
@@ -276,26 +291,70 @@ public class Graph {
                 int index_current = all_node.indexOf(min_node);
                 if (!visited.contains(to_node) && distance[index_to_node] > distance[index_current] + edge.getWeight()) {
                     distance[index_to_node] = distance[index_current] + edge.getWeight();
-
+                    prev[index_to_node] = min_node;
                 }
             }
             visited.add(min_node);
+            index_path++;
         }
-        for (int i = 0 ;i < 10 ; i ++){
-            for(int j = 0;j<10;j++){
-                int index = i*10+j;
-                System.out.print(distance[index]);
+        System.out.println("all node: ");
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 10; j++) {
+                int index = i * 10 + j;
+                System.out.print(all_node.get(index) +" ");
             }
             System.out.println();
         }
-        double min_weight;
+        System.out.println("distance :");
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 10; j++) {
+                int index = i * 10 + j;
+                System.out.print(distance[index] +" ");
+            }
+            System.out.println();
+        }
+        System.out.println("prev [] : ");
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 10; j++) {
+                int index = i * 10 + j;
+                System.out.print(prev[index] +" ");
+            }
+            System.out.println();
+        }
+        Node[] paths = back_to_start(prev,target,all_node);
+        for (Node node:paths){
+            System.out.println(node);
+        }
 
+        return paths;
+    }
+    private Node[] back_to_start(Node[] prev, Node targetNode,ArrayList<Node> all_node) {
+        List<Node> path = new ArrayList<>();
+        Node current = targetNode;
 
+        while (current != null) {
+            path.add(0, current);  // 每次插入最前面，保持起点 → 终点顺序
+            current = findPrev(prev, current,all_node);
+        }
+
+        return path.toArray(new Node[0]);  // 转成数组返回
+    }
+    private Node findPrev(Node[] prev, Node current,ArrayList<Node> all_node) {
+        for (int i = 0; i < prev.length; i++) {
+            if (current.equals(getNodeByIndex(i,all_node))) {  // 你需要知道当前节点在 prev 中的哪个位置
+                return prev[i];
+            }
+        }
         return null;
     }
-    private void test_for_running(ArrayList<Node> nodes,Node start, Node target){
-        System.out.println("start is contained in nodes:"+nodes.contains(start));
-        System.out.println("end is contained in nodes:"+nodes.contains(target));
+
+    private Node getNodeByIndex(int index, ArrayList<Node> all_node) {
+        return all_node.get(index);
+    }
+    private void test_for_running(ArrayList<Node> nodes, Node start, Node target) {
+        System.out.println("start is: "+start+"index is :" + nodes.indexOf(start)+"target is :"+target+"index is :"+nodes.indexOf(target));
+        System.out.println("start is contained in nodes:" + nodes.contains(start));
+        System.out.println("end is contained in nodes:" + nodes.contains(target));
     }
 
     private void get_all_nodes(Node start, ArrayList<Node> all_node) {

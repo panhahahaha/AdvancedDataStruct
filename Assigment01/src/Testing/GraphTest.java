@@ -312,7 +312,7 @@ public class GraphTest extends DSUnitTesting {
     public void dijkstrasSearch1() {
         AssignmentMarker.marks.put("Graph:dijkstrasSearch1", 5.0f);
         g.connectNodes(nodes);
-
+        System.out.println("nodes[40] is "+nodes[40]);
         Node[] exp_path = {nodes[40], nodes[50], nodes[60], nodes[71], nodes[72], nodes[73], nodes[74],
                 nodes[75], nodes[65], nodes[55], nodes[46], nodes[47], nodes[58]};
         Node[] actual_path = g.dijkstrasSearch(nodes[40], nodes[58]);

@@ -4,12 +4,7 @@ package GUI;
 import Graph.Node;
 import Graph.Position;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 
 /**
  * Reads in a previously serialised graph. All nodes in the
@@ -32,7 +27,10 @@ public class GraphLoader {
 			ObjectInputStream in;
 
 			System.out.println(System.getProperty("user.dir"));
-			fileIn = new FileInputStream("/home/p/DataStruct/Assigment/Assigment01/src/Resources/simple_graph.ser");
+			fileIn = new FileInputStream("Resources/simple_graph.ser");
+//			File file = new File("../Assigment01/src/Resources/simple_graph.ser");
+//			System.out.println("current path:"+file.getAbsolutePath());
+//			System.out.println("file exist :"+file.exists());
 			in = new ObjectInputStream(fileIn);
 			nodes = (Node[]) in.readObject();
 			in.close();
